@@ -14,6 +14,7 @@ t.url('https://www.mercadolivre.com.br/smart-tv-philco-ptv55q20snbl-dled-4k-55/p
 valor = t.read('price-tag-fraction')
 n = str(t.read('ui-pdp-title'))
 nome = n[0:14]
+nome = nome.lower().replace(' ','_')
 
 #Tirando print da pagina
 t.snap('page', 'results.jpg')
@@ -26,14 +27,8 @@ os.rename('results.jpg', 'files/' + titulo + '.jpg')
 conn = sqlite3.connect("precoproduto.db")
 cursor = conn.cursor()
 
-#Criando tabela
-cursor.execute("""CREATE TABLE preco
-            (nomeproduto text, valorproduto text)
-            """)
-
 #inserindo valores da pagina na tabela
 cursor.execute("INSERT INTO preco VALUES(?,?)", (nome, valor))
-#conn.commit()
 sql = "SELECT * FROM preco"
 cursor.execute(sql)
 conn.commit()
@@ -42,3 +37,6 @@ conn.commit()
 t.click('ui-pdp-action-modal ui-pdp-seller__link-trigger')
 t.snap('page', 'results1.jpg')
 os.rename('results1.jpg', 'files/print_de_teste.jpg')
+
+#encerrando google chrome
+t.close()
